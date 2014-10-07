@@ -87,18 +87,20 @@ public class BogoPicGenActivity extends Activity {
 	}
 
 	private Bitmap ourBMP;
-
+	private String randomText;
+	
 	private void setBogoPic() {
 		// TODO: Show a toast with message "Generating Photo"
-		
+		Toast.makeText(this, "Generating photo", Toast.LENGTH_LONG).show();
 		
 		// TODO: Get a reference to the image button
-		
+		ImageButton button = (ImageButton) findViewById(R.id.TakeAPhoto);
 		
 		// Generate a bogopic
 		ourBMP = BogoPicGen.generateBitmap(400, 400);
-		
+		randomText = "This Is My Random Text Stuff";
 		// TODO: Assign the bogopic to the button with setImageBitmap
+		button.setImageBitmap(ourBMP);
 		
 	}
 
@@ -112,13 +114,22 @@ public class BogoPicGenActivity extends Activity {
 		try {	
 			if (intent.getExtras() != null) {
 				// TODO: If cancelled, show a toast, set result to RESULT_CANCELED, finish and return 
-				
-				
+				// shown in onCreate() in listener
+				if(cancel){
+					Toast.makeText(this, "photo cancelled", Toast.LENGTH_LONG).show();
+					setResult(RESULT_CANCELED);
+					finish();
+					return;
+				}
 				// If accepted save the picture
 				File intentPicture = getPicturePath(intent);
 				saveBMP(intentPicture, ourBMP);
 				
 				// TODO: set result to RESULT_OK
+				Intent textIntent = new Intent();
+				textIntent.putExtra(Intent.EXTRA_TEXT, "random text stuff!!!!!!");
+				setResult(RESULT_OK, textIntent);
+				
 				
 			} else {
 				Toast.makeText(this, "Photo Cancelled: No Reciever?",
@@ -148,5 +159,6 @@ public class BogoPicGenActivity extends Activity {
 		Uri uri = (Uri) intent.getExtras().get(MediaStore.EXTRA_OUTPUT);
 		return new File(uri.getPath());
 	}
+	
 
 }
